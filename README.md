@@ -1,69 +1,67 @@
-# AI-powered-Resume-Screening-system.md
+🚀 AI-Powered Resume Screening & Ranking System
+An intelligent AI-driven system designed to automate the recruitment process by ranking resumes based on Job Descriptions (JD) using Natural Language Processing.
 
-### An AI-powered system for automated resume screening and ranking based on job descriptions.
+🌐 Live Demo: smart-screening-system.streamlit.app
 
-## 📌 Overview
-The **Resume Ranking System** is an AI-driven tool designed to simplify and optimize the hiring process. It allows recruiters to upload resumes, enter a job description, and receive ranked resumes based on their relevance. This system leverages **Natural Language Processing (NLP)** and **Machine Learning (ML)** algorithms to evaluate and compare resumes efficiently.
+📌 Overview
+The Resume Ranking System is an AI-driven tool designed to simplify and optimize the hiring process. It allows recruiters to upload resumes, enter a job description, and receive ranked candidates based on their relevance using NLP and Machine Learning algorithms.
 
-## ✨ Features
-- 📂 **Upload multiple resumes** (PDF format, max 200MB per file)
-- 📝 **Input job description** to match candidate profiles
-- 📊 **Resume ranking system** using NLP and ML techniques
-- 🔍 **Match score (%)** to evaluate candidate relevance
-- 💡 **AI suggestions** for resume improvement
-- 🎨 **Dark theme UI** with a sleek, interactive design
-- ☁ **Deployed using Streamlit**
+✨ Features
+📂 Bulk Upload: Upload multiple resumes in PDF format (max 200MB per file).
 
-## 🛠️ Tech Stack
-- **Frontend & UI:** Streamlit
-- **Backend:** Python, Flask
-- **NLP Processing:** spaCy, NLTK, TF-IDF
-- **Machine Learning:** Scikit-learn, KNN, Cosine Similarity
-- **Data Handling:** Pandas, NumPy
-- **Deployment:** Streamlit Cloud / Local Hosting
+📝 JD Matching: Input job descriptions to match specific candidate profiles.
 
-## 📷 Screenshots
-### Upload Resumes & Enter Job Description
-![Upload Resume](./screenshots/upload.png)
-![Upload Resume](./screenshots/resumeupload.png)
+📊 NLP Ranking: Resume ranking system using TF-IDF Vectorization and Cosine Similarity.
 
-### Resume Ranking Results
-![Resume Ranking](./screenshots/screening.png)
+🔍 Match Score (%): Instant match scores to evaluate candidate relevance.
 
-## 🏗️ Installation & Setup
-### Clone the Repository
-```bash
-git clone https://github.com//Gauravsharma-eng AI-Resume-Screening-And-System-Ranking.git
+💡 AI Suggestions: Get suggestions for resume improvement based on the score.
+
+🎨 Sleek UI: Dark theme UI with a sleek, interactive design built with Streamlit.
+
+☁ Cloud Deployed: Fully hosted and accessible online via Streamlit Cloud.
+
+🛠️ Tech Stack
+Frontend & UI: Streamlit
+
+Backend: Python
+
+NLP Processing: TF-IDF Vectorization, PyPDF2
+
+Machine Learning: Scikit-learn (Cosine Similarity)
+
+Data Handling: Pandas, NumPy
+
+Deployment: Streamlit Cloud
+
+📷 Screenshots
+1️⃣ Upload & Input Interface
+2️⃣ Multiple Resume Selection
+3️⃣ AI Ranking Results
+🏗️ Installation & Setup
+Clone the Repository
+
+Bash
+git clone [https://github.com/Gauravsharma-eng/AI-Resume-Screening-And-System-Ranking.git](https://github.com/Gauravsharma-eng/AI-Resume-Screening-And-System-Ranking.git)
 cd AI-Resume-Screening-And-System-Ranking
-```
+Install Dependencies
 
-### Install Dependencies
-```bash
+Bash
 pip install -r requirements.txt
-```
+Run the Application
 
-### Run the Application
-```bash
-streamlit run app.py
-```
+Bash
+streamlit run resume_app.py
+🎯 How It Works
+Upload resumes (PDF format).
 
-## 🎯 How It Works
-1. **Upload resumes** (PDF format)
-2. **Enter job description** in the input box
-3. Click **Submit** to process and rank resumes
-4. **View ranked resumes** with match scores & AI suggestions
+Enter job description in the input box.
 
-## 📌 Future Enhancements
-- ✅ Support for DOCX and other file formats
-- ✅ Advanced AI-based skill extraction
-- ✅ Cloud-based deployment
+Click Submit to process and rank resumes using NLP.
 
-## 💡 Contributing
-Contributions are welcome! Feel free to fork this repo and submit a pull request.
+View Results: See ranked resumes with match scores & AI feedback.
 
-## 🔗 Connect With Me
-- **GitHub:** [gauravsharma](https://github.com/Gauravsharma-eng)
-- **LinkedIn:** [Gauravsharma](www.linkedin.com/in/gaurav-sharma-aa584a257)
+📌 Future Enhancements
+✅ Support for DOCX and other file formats.
 
----
-🚀 **Transform your hiring process with AI-powered resume ranking!**
+✅ Advanced AI-based skill extraction using NERBhai, maine aapka live link https://smart-screening-system.streamlit.app/ iss README.md file mein sahi jagah par add kar diya hai. Aapne jo Python 3.11/3.12 wala stable version choose kiya hai, uske baad ye link ek dum perfect chalega.
