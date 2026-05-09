@@ -3,3 +3,4 @@ PyPDF2
 scikit-learn
 pandas
 matplotlib
+pyrebase4
