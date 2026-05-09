@@ -1,4 +1,5 @@
 import streamlit as st
+import pyrebase
 from PyPDF2 import PdfReader
 import pandas as pd
 import time
@@ -7,19 +8,6 @@ import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# ---------------- 🔐 LOGIN SYSTEM ----------------
-
-PASSWORD = "gaurav123"
-
-password = st.text_input(
-    "🔐 Enter Password",
-    type="password"
-)
-
-if password != PASSWORD:
-    st.warning("Please enter correct password")
-    st.stop()
-
 # ---------------- ⚙️ CONFIG ----------------
 
 st.set_page_config(
@@ -27,6 +15,79 @@ st.set_page_config(
     layout="wide",
     page_icon="🎯"
 )
+
+# ---------------- 🔐 FIREBASE LOGIN ----------------
+
+firebaseConfig = {
+    "apiKey": "AIzaSyBGpk8kNpoXi1WD0tFBrglzJ8hNZjyVCVY",
+    "authDomain": "resume-ranking-system-42b7e.firebaseapp.com",
+    "projectId": "resume-ranking-system-42b7e",
+    "storageBucket": "resume-ranking-system-42b7e.firebasestorage.app",
+    "messagingSenderId": "921266630636",
+    "appId": "1:921266630636:web:cab54110158f28be025ac9",
+    "databaseURL": ""
+}
+
+firebase = pyrebase.initialize_app(firebaseConfig)
+
+auth = firebase.auth()
+
+st.title("🔐 Login / Signup")
+
+choice = st.selectbox(
+    "Select Option",
+    ["Login", "Sign Up"]
+)
+
+email = st.text_input("Email")
+
+password = st.text_input(
+    "Password",
+    type="password"
+)
+
+authentication = False
+
+# ---------------- SIGNUP ----------------
+
+if choice == "Sign Up":
+
+    if st.button("Create Account"):
+
+        try:
+            auth.create_user_with_email_and_password(
+                email,
+                password
+            )
+
+            st.success("✅ Account Created Successfully!")
+
+        except:
+            st.error("❌ Signup Failed")
+
+# ---------------- LOGIN ----------------
+
+else:
+
+    if st.button("Login"):
+
+        try:
+            user = auth.sign_in_with_email_and_password(
+                email,
+                password
+            )
+
+            authentication = True
+
+            st.success("✅ Login Successful!")
+
+        except:
+            st.error("❌ Invalid Email or Password")
+
+# Stop app if not logged in
+
+if not authentication:
+    st.stop()
 
 # ---------------- 🎨 CUSTOM CSS ----------------
 
@@ -74,6 +135,7 @@ def extract_text_from_pdf(file):
     return text.strip()
 
 def rank_resumes(job_description, resumes):
+
     documents = [job_description] + resumes
 
     vectorizer = TfidfVectorizer().fit_transform(documents)
@@ -100,7 +162,7 @@ def generate_resume_tips(score):
     else:
         return "⚡ Low match! Try improving your skills section."
 
-# ---------------- 🚀 DAILY UPLOAD LIMIT ----------------
+# ---------------- 🚀 DAILY LIMIT ----------------
 
 if "upload_count" not in st.session_state:
     st.session_state.upload_count = 0
@@ -108,14 +170,13 @@ if "upload_count" not in st.session_state:
 MAX_UPLOADS = 3
 
 if st.session_state.upload_count >= MAX_UPLOADS:
-    st.error("🚫 Daily upload limit reached (3 uploads only)")
+    st.error("🚫 Daily upload limit reached")
     st.stop()
 
-# ---------------- 🚀 UI ----------------
+# ---------------- 🚀 MAIN UI ----------------
 
 st.title("🚀 Resume Ranking System")
 
-# Banner
 if os.path.exists("upload.png"):
     st.image("upload.png", use_container_width=True)
 
@@ -140,16 +201,15 @@ with col1:
         accept_multiple_files=True
     )
 
-    # ---------------- 📁 FILE SIZE LIMIT ----------------
+    # File Size Limit
 
     if uploaded_files:
 
         for file in uploaded_files:
 
-            # 5 MB limit
             if file.size > 5 * 1024 * 1024:
                 st.error(
-                    f"❌ {file.name} is larger than 5 MB"
+                    f"❌ {file.name} exceeds 5 MB"
                 )
                 st.stop()
 
@@ -223,7 +283,6 @@ if st.button("🚀 Analyze & Rank Resumes"):
 
         st.balloons()
 
-        # Increase upload count
         st.session_state.upload_count += 1
 
     else:
