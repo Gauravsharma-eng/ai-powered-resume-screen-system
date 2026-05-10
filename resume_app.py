@@ -1,6 +1,3 @@
-# Complete Advanced Resume Ranking System Code
-
-```python
 import streamlit as st
 import pyrebase
 from PyPDF2 import PdfReader
@@ -310,12 +307,6 @@ if st.button("🚀 Analyze & Rank Resumes"):
 
         st.header("📊 Resume Ranking Results")
 
-        if os.path.exists("screening.png"):
-            st.image(
-                "screening.png",
-                use_container_width=True
-            )
-
         resumes = [
             extract_text_from_pdf(file)
             for file in uploaded_files
@@ -429,6 +420,3 @@ if st.button("🚀 Analyze & Rank Resumes"):
         st.warning(
             "⚠️ Upload resumes and enter job description"
         )
-```
-
-
