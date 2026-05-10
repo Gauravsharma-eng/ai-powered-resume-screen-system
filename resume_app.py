@@ -1,3 +1,6 @@
+# Complete Advanced Resume Ranking System Code
+
+```python
 import streamlit as st
 import pyrebase
 from PyPDF2 import PdfReader
@@ -8,7 +11,7 @@ import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# ---------------- ⚙️ CONFIG ----------------
+# ---------------- PAGE CONFIG ----------------
 
 st.set_page_config(
     page_title="🚀 Resume Ranking System",
@@ -16,7 +19,7 @@ st.set_page_config(
     page_icon="🎯"
 )
 
-# ---------------- 🔐 FIREBASE LOGIN ----------------
+# ---------------- FIREBASE CONFIG ----------------
 
 firebaseConfig = {
     "apiKey": "AIzaSyBGpk8kNpoXi1WD0tFBrglzJ8hNZjyVCVY",
@@ -29,110 +32,141 @@ firebaseConfig = {
 }
 
 firebase = pyrebase.initialize_app(firebaseConfig)
-
 auth = firebase.auth()
 
-st.title("🔐 Login / Signup")
+# ---------------- SESSION STATE ----------------
 
-choice = st.selectbox(
-    "Select Option",
-    ["Login", "Sign Up"]
-)
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
-email = st.text_input("Email")
+# ---------------- LOGIN SYSTEM ----------------
 
-password = st.text_input(
-    "Password",
-    type="password"
-)
+if not st.session_state.logged_in:
 
-authentication = False
+    st.title("🔐 Resume Ranking Login")
 
-# ---------------- SIGNUP ----------------
+    choice = st.selectbox(
+        "Select Option",
+        ["Login", "Sign Up"]
+    )
 
-if choice == "Sign Up":
+    email = st.text_input("Email")
 
-    if st.button("Create Account"):
+    password = st.text_input(
+        "Password",
+        type="password"
+    )
 
-        try:
-            auth.create_user_with_email_and_password(
-                email,
-                password
-            )
+    # Signup
 
-            st.success("✅ Account Created Successfully!")
+    if choice == "Sign Up":
 
-        except:
-            st.error("❌ Signup Failed")
+        if st.button("Create Account"):
 
-# ---------------- LOGIN ----------------
+            try:
+                auth.create_user_with_email_and_password(
+                    email,
+                    password
+                )
 
-else:
+                st.success("✅ Account Created Successfully")
 
-    if st.button("Login"):
+            except:
+                st.error("❌ Signup Failed")
 
-        try:
-            user = auth.sign_in_with_email_and_password(
-                email,
-                password
-            )
+    # Login
 
-            authentication = True
+    else:
 
-            st.success("✅ Login Successful!")
+        if st.button("Login"):
 
-        except:
-            st.error("❌ Invalid Email or Password")
+            try:
+                user = auth.sign_in_with_email_and_password(
+                    email,
+                    password
+                )
 
-# Stop app if not logged in
+                st.session_state.logged_in = True
+                st.rerun()
 
-if not authentication:
+            except:
+                st.error("❌ Invalid Email or Password")
+
     st.stop()
 
-# ---------------- 🎨 CUSTOM CSS ----------------
+# ---------------- SIDEBAR ----------------
+
+with st.sidebar:
+
+    st.title("👨‍💻 Project Details")
+
+    st.info("Developed by Gaurav")
+
+    st.write("📍 Gwalior, India")
+
+    st.markdown("---")
+
+    st.write("🚀 Tech Stack")
+
+    st.write("""
+    - Streamlit
+    - NLP (TF-IDF)
+    - Firebase Auth
+    - Scikit-Learn
+    - Python
+    """)
+
+    st.markdown("---")
+
+    if st.button("🚪 Logout"):
+        st.session_state.logged_in = False
+        st.rerun()
+
+# ---------------- CUSTOM CSS ----------------
 
 st.markdown("""
-    <style>
-    .stApp {
-        background-color: #1E1E1E;
-        color: white;
-    }
+<style>
+.stApp {
+    background-color: #1E1E1E;
+    color: white;
+}
 
-    h1 {
-        text-align: center;
-        color: #4CAF50;
-        font-size: 36px;
-        font-weight: bold;
-    }
+h1 {
+    text-align: center;
+    color: #4CAF50;
+    font-size: 40px;
+    font-weight: bold;
+}
 
-    .stTextArea, .stFileUploader {
-        border-radius: 10px;
-        box-shadow: 0 0 10px #4CAF50;
-    }
+.stButton>button {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 10px;
+    height: 3em;
+    width: 100%;
+    font-size: 18px;
+}
 
-    .stButton>button {
-        background-color: #4CAF50;
-        color: white;
-        padding: 12px 18px;
-        font-size: 18px;
-        border-radius: 8px;
-        border: none;
-        transition: 0.3s;
-        width: 100%;
-    }
-
-    .stButton>button:hover {
-        background-color: #45a049;
-    }
-    </style>
+.stButton>button:hover {
+    background-color: #45a049;
+}
+</style>
 """, unsafe_allow_html=True)
 
-# ---------------- 📌 FUNCTIONS ----------------
+# ---------------- FUNCTIONS ----------------
 
 def extract_text_from_pdf(file):
+
     pdf = PdfReader(file)
-    text = "".join([page.extract_text() or "" for page in pdf.pages])
+
+    text = "".join([
+        page.extract_text() or ""
+        for page in pdf.pages
+    ])
+
     return text.strip()
+
+# Resume Ranking
 
 def rank_resumes(job_description, resumes):
 
@@ -151,18 +185,59 @@ def rank_resumes(job_description, resumes):
         resume_vectors
     ).flatten()
 
+# Resume Tips
+
 def generate_resume_tips(score):
 
     if score > 80:
-        return "🔥 Excellent match! Your resume is well-optimized."
+        return "🔥 Excellent match!"
 
     elif score > 60:
-        return "✅ Good match! Consider adding more relevant keywords."
+        return "✅ Good resume. Add more keywords."
 
     else:
-        return "⚡ Low match! Try improving your skills section."
+        return "⚡ Improve skills and experience section."
 
-# ---------------- 🚀 DAILY LIMIT ----------------
+# ATS Score
+
+def calculate_ats_score(score):
+
+    return min(round(score * 100), 100)
+
+# Missing Skills Detector
+
+def find_missing_skills(job_description, resume_text):
+
+    common_skills = [
+        "python",
+        "sql",
+        "machine learning",
+        "deep learning",
+        "nlp",
+        "tensorflow",
+        "communication",
+        "leadership",
+        "excel",
+        "power bi",
+        "data analysis"
+    ]
+
+    job_description = job_description.lower()
+    resume_text = resume_text.lower()
+
+    required_skills = [
+        skill for skill in common_skills
+        if skill in job_description
+    ]
+
+    missing_skills = [
+        skill for skill in required_skills
+        if skill not in resume_text
+    ]
+
+    return ", ".join(missing_skills)
+
+# ---------------- DAILY LIMIT ----------------
 
 if "upload_count" not in st.session_state:
     st.session_state.upload_count = 0
@@ -170,12 +245,14 @@ if "upload_count" not in st.session_state:
 MAX_UPLOADS = 3
 
 if st.session_state.upload_count >= MAX_UPLOADS:
+
     st.error("🚫 Daily upload limit reached")
+
     st.stop()
 
-# ---------------- 🚀 MAIN UI ----------------
+# ---------------- MAIN UI ----------------
 
-st.title("🚀 Resume Ranking System")
+st.title("🚀 AI Resume Ranking System")
 
 if os.path.exists("upload.png"):
     st.image("upload.png", use_container_width=True)
@@ -184,6 +261,8 @@ st.markdown("---")
 
 col1, col2 = st.columns(2)
 
+# Upload Section
+
 with col1:
 
     st.header("📤 Upload Resumes")
@@ -191,12 +270,11 @@ with col1:
     if os.path.exists("resumeupload.png"):
         st.image(
             "resumeupload.png",
-            caption="Supported: PDF format",
             width=300
         )
 
     uploaded_files = st.file_uploader(
-        "Upload PDF files",
+        "Upload PDF resumes",
         type=["pdf"],
         accept_multiple_files=True
     )
@@ -213,27 +291,28 @@ with col1:
                 )
                 st.stop()
 
+# Job Description
+
 with col2:
 
     st.header("📝 Job Description")
 
     job_description = st.text_area(
-        "Enter the job description...",
-        height=200
+        "Enter Job Description",
+        height=220
     )
 
-# ---------------- 🚀 ANALYZE ----------------
+# ---------------- ANALYZE BUTTON ----------------
 
 if st.button("🚀 Analyze & Rank Resumes"):
 
     if uploaded_files and job_description:
 
-        st.header("📊 Resume Rankings")
+        st.header("📊 Resume Ranking Results")
 
         if os.path.exists("screening.png"):
             st.image(
                 "screening.png",
-                caption="AI Analysis in Progress",
                 use_container_width=True
             )
 
@@ -253,59 +332,103 @@ if st.button("🚀 Analyze & Rank Resumes"):
             resumes
         )
 
+        # Results DataFrame
+
         results_df = pd.DataFrame({
-            "Resume": [file.name for file in uploaded_files],
 
-            "Match Score (%)":
-            (scores * 100).round(2),
+            "Resume": [
+                file.name
+                for file in uploaded_files
+            ],
 
-            "AI Suggestion":
-            [
+            "Match Score (%)": (
+                scores * 100
+            ).round(2),
+
+            "ATS Score": [
+                calculate_ats_score(score)
+                for score in scores
+            ],
+
+            "Missing Skills": [
+                find_missing_skills(
+                    job_description,
+                    resume
+                )
+                for resume in resumes
+            ],
+
+            "AI Suggestion": [
                 generate_resume_tips(score * 100)
                 for score in scores
             ]
+
         }).sort_values(
             by="Match Score (%)",
             ascending=False
         )
 
+        # Display Results
+
         st.dataframe(
-            results_df.style.format({
-                "Match Score (%)": "{:.2f}"
-            }),
+            results_df,
             use_container_width=True
         )
 
-        st.success(
-            f"✅ Ranking Complete! 🎯 Top Match: "
-            f"**{results_df.iloc[0]['Resume']}**"
+        # Top Resume Card
+
+        st.markdown(f"""
+        <div style='padding:20px;
+        background-color:#4CAF50;
+        border-radius:12px;
+        text-align:center;
+        color:white;
+        font-size:24px;'>
+        🏆 Best Resume: {results_df.iloc[0]['Resume']}<br>
+        ⭐ ATS Score: {results_df.iloc[0]['ATS Score']}
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Chart
+
+        st.subheader("📈 Resume Match Score Chart")
+
+        fig, ax = plt.subplots(figsize=(8, 4))
+
+        ax.bar(
+            results_df["Resume"],
+            results_df["Match Score (%)"]
         )
+
+        ax.set_ylabel("Score")
+        ax.set_xlabel("Resume")
+
+        plt.xticks(rotation=15)
+
+        st.pyplot(fig)
+
+        # Download Report
+
+        csv = results_df.to_csv(index=False).encode('utf-8')
+
+        st.download_button(
+            label="📥 Download Ranking Report",
+            data=csv,
+            file_name="resume_ranking_report.csv",
+            mime="text/csv"
+        )
+
+        st.success("✅ Ranking Completed Successfully")
 
         st.balloons()
 
         st.session_state.upload_count += 1
 
     else:
+
         st.warning(
-            "⚠️ Please upload resumes AND enter a job description first!"
+            "⚠️ Upload resumes and enter job description"
         )
+```
 
-# ---------------- SIDEBAR ----------------
 
-with st.sidebar:
-
-    st.title("👨‍💻 Project Details")
-
-    st.info("Developed by Gaurav")
-
-    st.write("📍 Gwalior, India")
-
-    st.markdown("---")
-
-    st.write("🚀 Tech Stack:")
-
-    st.write("""
-    - Streamlit
-    - NLP (TF-IDF)
-    - Scikit-Learn
-    """)
