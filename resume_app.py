@@ -11,9 +11,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ---------------- PAGE CONFIG ----------------
 
 st.set_page_config(
-    page_title="🚀 Resume Ranking System",
-    layout="wide",
-    page_icon="🎯"
+    page_title="🚀 Resume Ranking System",
+    layout="wide",
+    page_icon="🎯"
 )
 
 # ---------------- FIREBASE CONFIG ----------------
