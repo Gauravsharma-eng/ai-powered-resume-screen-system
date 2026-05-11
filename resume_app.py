@@ -11,9 +11,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ---------------- PAGE CONFIG ----------------
 
 st.set_page_config(
-    page_title="🚀 Resume Ranking System",
-    layout="wide",
-    page_icon="🎯"
+    page_title="🚀 Resume Ranking System",
+    layout="wide",
+    page_icon="🎯"
 )
 
 # ---------------- FIREBASE CONFIG ----------------
@@ -35,36 +35,7 @@ auth = firebase.auth()
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
-if "upload_count" not in st.session_state:
-    st.session_state.upload_count = 0
 
-# ---------------- CUSTOM CSS (MOBILE FIX) ----------------
-st.markdown("""
-<style>
-    .stApp {
-        background-color: #1E1E1E;
-        color: white;
-    }
-    /* Mobile par uploader ko click-friendly banane ke liye */
-    [data-testid="stFileUploader"] {
-        width: 100%;
-        z-index: 999;
-        position: relative;
-    }
-    .stButton>button {
-        background-color: #4CAF50;
-        color: white;
-        border-radius: 10px;
-        height: 3em;
-        width: 100%;
-        font-size: 18px;
-    }
-    h1 {
-        text-align: center;
-        color: #4CAF50;
-    }
-</style>
-""", unsafe_allow_html=True)
 # ---------------- LOGIN SYSTEM ----------------
 
 if not st.session_state.logged_in:
@@ -295,7 +266,7 @@ with col1:
 
     if os.path.exists("resumeupload.png"):
         st.image(
-            "resumeupload.png",use_container_width=True
+            "resumeupload.png",
             width=300
         )
 
@@ -303,7 +274,6 @@ with col1:
         "Upload PDF resumes",
         type=["pdf"],
         accept_multiple_files=True
-        key="resume_uploader"
     )
 
     # File Size Limit
